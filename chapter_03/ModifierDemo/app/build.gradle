@@ -4,30 +4,12 @@ plugins {
 }
 
 android {
-    compileSdk 33
-
-    repositories {
-        google()
-        mavenCentral()
-        maven {
-            url "https://repo.spring.io/release"
-        }
-        maven {
-            url "https://repository.jboss.org/maven2"
-        }
-        flatDir {
-            dirs 'lib'
-        }
-        flatDir {
-            dirs 'lib1', 'lib2'
-        }
-        mavenLocal()
-    }
+    compileSdk 34
 
     defaultConfig {
         applicationId "eu.thomaskuenneth.composebook.modifierdemo"
         minSdk 29
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
         vectorDrawables {
@@ -59,6 +41,12 @@ android {
         kotlinCompilerExtensionVersion "1.4.7"
     }
     namespace 'eu.thomaskuenneth.composebook.modifierdemo'
+    dependenciesInfo {
+        includeInApk true
+        includeInBundle true
+    }
+    buildToolsVersion '34.0.0'
+    ndkVersion '25.2.9519653'
 }
 
 dependencies {

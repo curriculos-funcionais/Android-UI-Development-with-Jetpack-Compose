@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
     defaultConfig {
         applicationId "eu.thomaskuenneth.composebook.hello"
         minSdk 29
-        targetSdk 33
+        targetSdk 34
         versionCode 1
-        versionName "1.0"
+        versionName "1.1"
         vectorDrawables {
             useSupportLibrary true
         }
@@ -26,16 +26,22 @@ android {
         sourceCompatibility 11
         targetCompatibility 11
     }
-    kotlinOptions {
-        jvmTarget = '11'
-    }
     buildFeatures {
         compose true
     }
     composeOptions {
         kotlinCompilerExtensionVersion "1.4.7"
     }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
     namespace 'eu.thomaskuenneth.composebook.hello'
+    dependenciesInfo {
+        includeInApk true
+        includeInBundle true
+    }
+    buildToolsVersion '34.0.0'
+    ndkVersion '25.2.9519653'
 }
 
 dependencies {
@@ -46,6 +52,6 @@ dependencies {
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
-    implementation 'androidx.activity:activity-compose:1.7.1'
+    implementation 'androidx.activity:activity-compose:1.7.2'
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 }
