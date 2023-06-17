@@ -1,9 +1,21 @@
+plugins {
+    id "com.gradle.enterprise" version "3.13.3"
+}
+
+gradleEnterprise {
+    // configuration
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+    // publishAlways()
+}
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
-        jcenter() // Warning: this repository is going to shut down soon
+        // jcenter() // Warning: this repository is going to shut down soon
     }
 }
 rootProject.name = "StateDemo"
