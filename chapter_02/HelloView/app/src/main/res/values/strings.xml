@@ -4,4 +4,5 @@
     <string name="hello">Hello, %1$s.\nNice to meet you.</string>
     <string name="done">Done</string>
     <string name="hint">Your payment here</string>
+    <string name="pay_config_merchant_name">Luis Mendes @luismendes070</string>
 </resources>
