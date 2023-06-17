@@ -9,12 +9,23 @@ import com.stripe.android.model.PaymentMethod
 import android.os.Bundle
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
+import com.stripe.android.PaymentConfiguration
 import com.stripe.android.PaymentSessionData
+import com.stripe.android.googlepaylauncher.GooglePayEnvironment
+import com.stripe.android.googlepaylauncher.GooglePayLauncher
 import eu.thomaskuenneth.composebook.hello_view.databinding.MainBinding
 
 class CheckoutActivity : AppCompatActivity() {
+
+    private lateinit var googlePayButton: Button
+
+    // fetch client_secret from backend
+    private lateinit var clientSecret: String
+
+    private lateinit var googlePayButton: Button
 
     private lateinit var binding: MainBinding
 
@@ -24,43 +35,92 @@ class CheckoutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = MainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        binding.message.text = getString(R.string.welcome)
-        binding.name.run {
-            setOnEditorActionListener { _, _, _ ->
-                binding.done.performClick()
-                true
+        try{
+
+            setContentView(R.layout.main)
+
+            PaymentConfiguration.init(this, PUBLISHABLE_KEY)
+
+            googlePayButton = findViewById<Button>(R.id.google_pay_button)
+
+            val googlePayLauncher = GooglePayLauncher(
+                activity = this,
+                config = GooglePayLauncher.Config(
+                    environment = GooglePayEnvironment.Test,
+                    merchantCountryCode = "US",
+                    merchantName = "Widget Store"
+                ),
+                readyCallback = ::onGooglePayReady,
+                resultCallback = ::onGooglePayResult
+            )
+
+            googlePayButton.setOnClickListener {
+                // launch `GooglePayLauncher` to confirm a Payment Intent
+                googlePayLauncher.presentForPaymentIntent(clientSecret)
             }
-            doAfterTextChanged {
-                enableOrDisableButton()
-            }
-            visibility = VISIBLE
-        }
-        binding.done.run {
-            setOnClickListener {
-                val name = binding.name.text
-                if (name.isNotBlank()) {
-                    binding.message.text = getString(R.string.hello, name)
-                    binding.name.visibility = GONE
-                    it.visibility = GONE
+
+            PaymentConfiguration.init(
+                applicationContext,
+                "pk_test_51J5v*************",
+                "us"
+            )
+
+            binding = MainBinding.inflate(layoutInflater)
+            setContentView(binding.root)
+            binding.message.text = getString(R.string.welcome)
+            binding.name.run {
+                setOnEditorActionListener { _, _, _ ->
+                    binding.done.performClick()
+                    true
                 }
+                doAfterTextChanged {
+                    enableOrDisableButton()
+                }
+                visibility = VISIBLE
             }
-            visibility = VISIBLE
+            binding.done.run {
+                setOnClickListener {
+                    val name = binding.name.text
+                    if (name.isNotBlank()) {
+                        binding.message.text = getString(R.string.hello, name)
+                        binding.name.visibility = GONE
+                        it.visibility = GONE
+                    }
+                }
+                visibility = VISIBLE
+            }
+            enableOrDisableButton()
+
+            setContentView(R.layout.main)
+
+            val publishableKey = "pk_test_..."
+            stripe = Stripe(applicationContext, publishableKey)
+
+            paymentSession = PaymentSession(
+                this,
+                createPaymentSessionConfig()
+            )
+
+            paymentSession.init(createPaymentSessionListener())
+
+        }catch (e : Exception){
+
+        }finally {
+
         }
-        enableOrDisableButton()
 
-        setContentView(R.layout.main)
+    }
 
-        val publishableKey = "pk_test_..."
-        stripe = Stripe(applicationContext, publishableKey)
+    private fun onGooglePayReady(isReady: Boolean) {
+        googlePayButton.isEnabled = isReady
+    }
 
-        paymentSession = PaymentSession(
-            this,
-            createPaymentSessionConfig()
-        )
+    private fun onGooglePayReady(isReady: Boolean) {
+        // implemented below
+    }
 
-        paymentSession.init(createPaymentSessionListener())
+    private fun onGooglePayResult(result: GooglePayLauncher.Result) {
+        // implemented below
     }
 
     private fun enableOrDisableButton() {
